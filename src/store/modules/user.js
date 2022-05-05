@@ -7,6 +7,7 @@ export default {
     state: {
         user: "", // 登录的用户
         showLogin: false, // 用于控制是否显示登录组件
+        showInformation: false, // 展示个人信息界面
     },
     // getters相当于vue中的计算属性，能拿到state里面最新的值,而且getters允许传参，第一个参数就是state
     getters: {
@@ -15,6 +16,9 @@ export default {
         },
         getShowLogin (state) {
             return state.showLogin
+        },
+        getShowInformation (state) {
+            return state.showInformation
         }
     },
     mutations: {
@@ -23,6 +27,9 @@ export default {
         },
         setShowLogin (state, data) {
             state.showLogin = data;
+        },
+        setShowInformation (state, data) {
+            state.showInformation = data
         }
     },
     actions: {
@@ -31,6 +38,9 @@ export default {
         },
         setShowLogin ({ commit }, data) {
             commit('setShowLogin', data);
+        },
+        setShowInformation ({ commit }, data) {
+            commit('setShowInformation', data);
         }
     }
 }

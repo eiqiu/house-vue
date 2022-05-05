@@ -245,6 +245,7 @@ export default {
       console.log("submit!")
     },
     httpRequest (option) {
+      console.log(option)
       this.fileList.push(option)
     },
     handleRemove(file, fileList) {

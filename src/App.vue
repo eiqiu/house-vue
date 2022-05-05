@@ -12,7 +12,6 @@
       <div class="topbar">
         <div class="nav">
           <ul>
-            <li><el-button @click="test">测试</el-button></li>
 <!--            用户是否登陆-->
             <li v-if="!this.$store.getters.getUser">
               <el-button type="text" @click="login">登录</el-button>
@@ -20,7 +19,6 @@
               <el-button type="text" @click="register = true">注册</el-button>
             </li>
             <li v-else>
-              欢迎
               <el-popover placement="top" width="180" v-model="visible">
                 <p>确定退出登录吗？</p>
                 <div style="text-align: right; margin: 10px 0 0">
@@ -29,6 +27,8 @@
                 </div>
                 <el-button type="text" slot="reference">{{this.$store.getters.getUser.user_name}}</el-button>
               </el-popover>
+              <span class="sep">|</span>
+              <el-button type="text" @click="myInformation">我的信息</el-button>
             </li>
             <li>
               <router-link to="/collect">我的收藏</router-link>
@@ -44,8 +44,6 @@
           </ul>
         </div>
       </div>
-
-
 <!--    顶部容器-->
     <el-header>
       <el-menu
@@ -72,6 +70,7 @@
       </el-menu>
     </el-header>
       <MyLogin></MyLogin>
+      <MyInformation></MyInformation>
       <MyRegister :register="register" @fromChild="isRegister"></MyRegister>
 
     <!-- 主体部分-->
@@ -111,7 +110,9 @@
 <script>
 import {mapActions} from "vuex";
 import {mapGetters} from "vuex";
+import MyInformation from "@/components/MyInformation";
 export default {
+  components: {MyInformation},
   beforeCreate() {
     this.activeIndex = this.$route.path;
     this.axios.post('/test',{
@@ -143,10 +144,14 @@ export default {
     ...mapGetters(["getUser", "getCategoryList"])
   },
   methods: {
-    ...mapActions(["setUser", "setShowLogin", "setCategoryList"]),
+    ...mapActions(["setUser", "setShowLogin", "setCategoryList", "setShowInformation"]),
     // 登陆
     login() {
       this.setShowLogin(true);
+    },
+    // 我的个人信息
+    myInformation() {
+      this.setShowInformation(true);
     },
     // 退出登录
     logout() {
@@ -169,21 +174,6 @@ export default {
         this.$router.push({ path: "/house", query: { search: this.search } });
         this.search = "";
       }
-    },
-    // 测试数据获取
-    test() {
-      let a = [{id:1,name:'a'},{id:2,name:'b'}];
-      let b = [{id:3,name:'c'}];
-      let c = a+b;
-      console.log(c)
-      this.axios.post('/test',{
-        user_name: 'admin123',
-        user_password: 'password123456'
-      }).then(res => {
-        this.testList = res.data.data
-      }).catch(err => {
-        return Promise.reject(err);
-      })
     }
   }
 }

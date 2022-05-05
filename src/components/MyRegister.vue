@@ -59,13 +59,13 @@ export default {
       const userNameRule = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;
       if (userNameRule.test(value)) {
         //判断数据库中是否已经存在该用户名
-        this.$axios
-            .post("/api/users/findUserName", {
-              userName: this.RegisterUser.name
+        this.axios
+            .post("/user/findUserAccount", {
+              user_account: this.RegisterUser.name
             })
             .then(res => {
-              // “001”代表用户名不存在，可以注册
-              if (res.data.code == "001") {
+              // 200代表用户名不存在，可以注册
+              if (res.data.code === 200) {
                 this.$refs.ruleForm.validateField("checkPass");
                 return callback();
               } else {
@@ -144,14 +144,15 @@ export default {
       this.$refs["ruleForm"].validate(valid => {
         //如果通过校验开始注册
         if (valid) {
-          this.$axios
-              .post("/api/users/register", {
-                userName: this.RegisterUser.name,
-                password: this.RegisterUser.pass
+          console.log("执行注册")
+          this.axios
+              .post("/user/register", {
+                user_account: this.RegisterUser.name,
+                user_password: this.RegisterUser.pass
               })
               .then(res => {
                 // “001”代表注册成功，其他的均为失败
-                if (res.data.code === "001") {
+                if (res.data.code === 200) {
                   // 隐藏注册组件
                   this.isRegister = false;
                   // 弹出通知框提示注册成功信息
