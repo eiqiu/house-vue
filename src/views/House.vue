@@ -62,10 +62,10 @@ export default {
     return {
       categoryList: "", //分类列表
       categoryID: -1, // 分类id
-      houseList: "",// 房子列表
+      houseList: [],// 房子列表
       activeName: "-1", // 分类列表当前选中的id
       total: 0, // 房子总量
-      pageSize: 15, // 每页显示的商品数量
+      pageSize: 10, // 每页显示的商品数量
       currentPage: 1, //当前页码
       search: "" // 搜索条件
     };
@@ -160,104 +160,15 @@ export default {
     // 向后端请求全部房子或者分类房子
     getData() {
       // 0:全部房子 1:热门房子 2~...
-      if (this.categoryID == 0){
-        this.houseList = [
-          {
-            house_id: 1,
-            category_id: 1,
-            house_title: '吉房出租',
-            house_price: 36.5,
-            house_address: '全部',
-            house_sort: '学区房',
-            house_picture: require("../assets/imgs/img01.png")
-          },
-          {
-            house_id: 2,
-            category_id: 2,
-            house_title: '吉房出租',
-            house_price: 75,
-            house_address: '全部',
-            house_sort: '医院房',
-            house_picture: require("../assets/imgs/img01.png")
-          },
-          {
-            house_id: 3,
-            category_id: 1,
-            house_title: '吉房出租',
-            house_price: 75,
-            house_address: '全部',
-            house_sort: '别墅',
-            house_picture: require("../assets/imgs/img01.png")
-          }
-        ]
-      }else if (this.categoryID == 1){
-        this.houseList = [
-          {
-            house_id: 1,
-            house_price: 36.5,
-            house_title: '吉房出租',
-            house_address: '莱山',
-            house_sort: '热门',
-            house_picture: require("../assets/imgs/img01.png")
-          },
-          {
-            house_id: 2,
-            house_price: 75,
-            house_title: '吉房出租',
-            house_address: '莱山',
-            house_sort: '热门',
-            house_picture: require("../assets/imgs/img01.png")
-          }
-        ]
-      }else if (this.categoryID == 2){
-        this.houseList = [
-          {
-            house_id: 1,
-            house_price: 36.5,
-            house_title: '吉房出租',
-            house_address: '分类2',
-            house_sort: '分类2',
-            house_picture: require("../assets/imgs/img01.png")
-          },
-          {
-            house_id: 2,
-            house_price: 75,
-            house_title: '吉房出租',
-            house_address: '分类2',
-            house_sort: '分类2',
-            house_picture: require("../assets/imgs/img01.png")
-          }
-        ]
-      }else if (this.categoryID == 3){
-        this.houseList = [
-          {
-            house_id: 1,
-            house_price: 36.5,
-            house_title: '吉房出租',
-            house_address: '分类2',
-            house_sort: '分类3',
-            house_picture: require("../assets/imgs/img01.png")
-          },
-          {
-            house_id: 2,
-            house_price: 75,
-            house_title: '吉房出租',
-            house_address: '分类2',
-            house_sort: '分类3',
-            house_picture: require("../assets/imgs/img01.png")
-          }
-        ]
-      }
-
       this.axios
-          .post('/house/getHouseByCategory', {
+          .post('/house/getHouse', {
             categoryID: this.categoryID,
-            currentPage: this.currentPage,
+            pageNum: this.currentPage,
             pageSize: this.pageSize
           })
           .then(res => {
-            this.house = res.data.data;
-            this.total = res.data.total;
+            this.houseList = res.data.data.list;
+            this.total = res.data.data.total;
           })
           .catch(err => {
             return Promise.reject(err);

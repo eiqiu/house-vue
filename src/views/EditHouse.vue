@@ -62,6 +62,26 @@
       <el-form-item label="房屋描述">
         <el-input type="textarea" v-model="ruleForm.house_description" style="width: 480px"></el-input>
       </el-form-item>
+      <el-form-item label="图片信息">
+        <el-carousel style="height: 300px;width: 300px">
+          <el-carousel-item v-for="item in ruleForm.house_picture" :key="item.category_id">
+            <img style="height:300px;" :src="$target + item.imgPath" :alt="item.describes" />
+          </el-carousel-item>
+        </el-carousel>
+        <el-button @click="change">修改</el-button>
+      </el-form-item>
+      <el-form-item v-show="this.changePic">
+        <el-upload
+            action=""
+            list-type="picture-card"
+            :on-preview="handlePictureCardPreview"
+            :http-request="httpRequest">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+        <el-dialog :visible.sync="dialogVisible">
+          <img width="100%" :src="dialogImageUrl" alt="">
+        </el-dialog>
+      </el-form-item>
       <span style="font-weight: bold;line-height: 50px">详细资料：</span>
       <el-row>
         <el-form-item label="房屋户型">
@@ -144,7 +164,6 @@ export default {
       house_price: 75,
       house_address: '莱山区快乐小区',
       house_sort: '医院房',
-      house_picture: require("../assets/imgs/img01.png")
     }
     this.axios.post('/house/getHouseByID',{
       house_id: this.$route.query
@@ -161,6 +180,9 @@ export default {
   },
   data() {
     return {
+      dialogImageUrl: '',
+      dialogVisible: false,
+      fileList: [],
       house: '',
       ruleForm1: {
         num_shi: 0,
@@ -194,7 +216,24 @@ export default {
         transportation: "",
         surrounding_facilities: "",
         house_description: "",
-        house_state: false
+        house_state: false,
+        house_picture: [
+          {
+            category_id: 1,
+            imgPath: 'img01.png',
+            describes: '1'
+          },
+          {
+            category_id: 2,
+            imgPath: 'img02.png',
+            describes: '2'
+          },
+          {
+            category_id: 3,
+            imgPath: 'img03.png',
+            describes: '3'
+          }
+        ]
       },
       rules: {
         house_title: [
@@ -238,7 +277,8 @@ export default {
           },
         ],
       },
-      citydata
+      citydata,
+      changePic: false
     }
   },
   computed: {
@@ -252,17 +292,32 @@ export default {
     resetForm() {
       console.log("submit!")
     },
+    httpRequest (option) {
+      console.log(option)
+      this.fileList.push(option)
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    change() {
+      this.changePic = true;
+    },
     // 上传表单
     submitForm() {
+      // 使用formData
+      const formData = new FormData();
       // 零碎数据合并
       this.ruleForm.house_address += this.ruleForm1.house_address_detail;
       this.ruleForm.house_type = this.house_type;
-      console.log(this.ruleForm)
+      this.ruleForm.publish_time = new Date();
+      formData.append('house',new Blob([JSON.stringify(this.ruleForm)], { type: 'application/json' }));
+      this.fileList.forEach((it) => {
+        formData.append('file', it.file)
+      });
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
-          this.axios.post('/house/editHouse',{
-            house: this.ruleForm
-          }).then(res => {
+          this.axios.post('/house/changeHouse',formData).then(res => {
             if (res.data.code === 200) {
               this.notifySucceed(res.data.msg);
             }else {
@@ -275,7 +330,6 @@ export default {
           return false;
         }
       })
-
     }
   }
 }

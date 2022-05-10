@@ -36,15 +36,15 @@
       <div class="content">
         <h1 class="name">{{houseDetails.house_address}}</h1>
         <p class="intro">{{houseDetails.house_description}}</p>
-        <p class="store" v-if="houseDetails.bargain === 1"><i class="el-icon-circle-check"></i>可议价</p>
+        <p class="store" v-if="houseDetails.bargain === true"><i class="el-icon-circle-check"></i>可议价</p>
         <p class="store" v-else><i class="el-icon-circle-close"></i>不可议价</p>
         <div class="price">
           <span class="total-price">总价：{{houseDetails.house_price}}万元</span>
         </div>
         <div class="house-list">
-          <span class="pro-name"><i class="el-icon-user"></i>{{houseDetails.owner_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <span class="pro-name"><i class="el-icon-phone"></i>{{houseDetails.owner_tel}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <span class="pro-name"><i class="el-icon-map-location"></i>{{houseDetails.owner_address}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span class="pro-name"><i class="el-icon-user"></i>{{houseDetails.user_name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span class="pro-name"><i class="el-icon-phone"></i>{{houseDetails.user_tel}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <span class="pro-name"><i class="el-icon-map-location"></i>{{houseDetails.user_address}}</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <p class="price-sum"></p>
           <span><i class="el-icon-view"></i>{{houseDetails.viewing_time}}</span>
         </div>
@@ -79,25 +79,24 @@
     <div class="base-info">
       <el-descriptions title="详细信息" :column="4" border labelStyle="font-size:14px;font-weight:700;color:black;">
         <el-descriptions-item label="类型">{{this.houseDetails.house_type}}</el-descriptions-item>
-        <el-descriptions-item label="面积">180m^2</el-descriptions-item>
-        <el-descriptions-item label="户型" :span="2">2室2厅1厨1卫</el-descriptions-item>
-        <el-descriptions-item label="户型结构">板房</el-descriptions-item>
-        <el-descriptions-item label="建筑类型">板楼</el-descriptions-item>
-        <el-descriptions-item label="建筑结构">砖混结构</el-descriptions-item>
-        <el-descriptions-item label="房屋朝向">南北</el-descriptions-item>
-        <el-descriptions-item label="装修情况">精修</el-descriptions-item>
-        <el-descriptions-item label="梯户比例">一梯三户</el-descriptions-item>
-        <el-descriptions-item label="供暖方式">集体供暖</el-descriptions-item>
-        <el-descriptions-item label="是否配备电梯">是</el-descriptions-item>
-        <el-descriptions-item label="交通出行" :span="4">周围很好</el-descriptions-item>
-        <el-descriptions-item label="周边设施" :span="4">医院、商场、娱乐设施都有</el-descriptions-item>
+        <el-descriptions-item label="面积">{{ this.houseDetails.house_area }}</el-descriptions-item>
+        <el-descriptions-item label="户型" :span="2">{{ this.houseDetails.house_type }}</el-descriptions-item>
+        <el-descriptions-item label="户型结构">{{ this.houseDetails.house_structure }}</el-descriptions-item>
+        <el-descriptions-item label="建筑类型">{{ this.houseDetails.building_type }}</el-descriptions-item>
+        <el-descriptions-item label="建筑结构">{{ this.houseDetails.building_structure }}</el-descriptions-item>
+        <el-descriptions-item label="房屋朝向">{{ this.houseDetails.house_towards }}</el-descriptions-item>
+        <el-descriptions-item label="装修情况">{{ this.houseDetails.house_decoration }}</el-descriptions-item>
+        <el-descriptions-item label="梯户比例">{{ this.houseDetails.house_ladder }}</el-descriptions-item>
+        <el-descriptions-item label="供暖方式">{{ this.houseDetails.heating_mode }}</el-descriptions-item>
+        <el-descriptions-item label="是否配备电梯">{{ this.houseDetails.elevator }}</el-descriptions-item>
+        <el-descriptions-item label="交通出行" :span="4">{{ this.houseDetails.transportation }}</el-descriptions-item>
+        <el-descriptions-item label="周边设施" :span="4">{{ this.houseDetails.surrounding_facilities }}</el-descriptions-item>
       </el-descriptions>
     </div>
     <!-- 底部详细内容区END -->
   </div>
 </template>
 <script>
-import { mapActions } from "vuex";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Detail',
@@ -105,20 +104,7 @@ export default {
     return {
       dis: true, // 检查是否是已收藏，默认是false
       houseID: "", // 商品id
-      houseDetails: {
-        house_title: '吉房出租',
-        house_address: "莱山区幸福小区",
-        house_description: '这个房子我一年不住了，因本人现出国深造大概2年，现将此房出租，小区下面有豪华游泳池，植被覆盖率100%，周围商场、游乐场配备齐全',
-        house_price: 78.0,
-        viewing_time: '早上8:00到下午6:00，周日因工作原因无法看房',
-        bargain: 1,
-        house_sort: '学区房',
-        owner_name: '王大爷',
-        owner_tel: '15069988778',
-        owner_address: '芝罘区花园小区',
-        house_type: '板房'
-      }, // 商品详细信息
-      housePicture: "" // 商品图片
+      houseDetails: "", // 商品详细信息
     };
   },
   // 通过路由获取商品id
@@ -127,17 +113,19 @@ export default {
     if (this.$route.query.houseID !== undefined) {
       this.houseID = this.$route.query.houseID;
     }
-    this.ifCollected();
+    if (!this.$store.getters.getUser){
+      this.dis = true;
+    }else {
+      this.ifCollected();
+    }
   },
   watch: {
     // 监听商品id的变化，请求后端获取商品数据
     houseID: function(val) {
       this.getDetails(val);
-      this.getDetailsPicture(val);
     }
   },
   methods: {
-    ...mapActions(["unshiftShoppingCart", "addShoppingCartNum"]),
     // 返回顶部
     backTop() {
       const timer = setInterval(function() {
@@ -154,24 +142,9 @@ export default {
     // 获取房子详细信息
     getDetails(val) {
       this.axios
-          .post("/house/getDetails", {
-            houseID: val
-          })
+          .post("/house/getHouseByID", {house_id: val})
           .then(res => {
             this.houseDetails = res.data.data;
-          })
-          .catch(err => {
-            return Promise.reject(err);
-          });
-    },
-    // 获取房子图片
-    getDetailsPicture(val) {
-      this.axios
-          .post("/house/getDetailsPicture", {
-            houseID: val
-          })
-          .then(res => {
-            this.housePicture = res.data.house_picture;
           })
           .catch(err => {
             return Promise.reject(err);
@@ -185,7 +158,7 @@ export default {
         return;
       }
       this.axios
-          .post("/user/collect/addCollect", {
+          .post("/house/addCollect", {
             user_id: this.$store.getters.getUser.user_id,
             house_id: this.houseID
           })
@@ -221,7 +194,7 @@ export default {
     },
     // 判断是否在用户的收藏里面
     ifCollected() {
-      this.axios.post('/user/collect/ifCollected',{
+      this.axios.post('/house/ifCollected',{
         user_id: this.$store.getters.getUser.user_id,
         house_id: this.houseID
       }).then(res => {

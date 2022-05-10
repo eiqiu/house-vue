@@ -52,7 +52,7 @@
         <el-input v-model="ruleForm.viewing_time" style="width: 480px"></el-input>
       </el-form-item>
       <el-form-item label="标签">
-        <el-checkbox-group v-model="ruleForm.type">
+        <el-checkbox-group v-model="ruleForm.house_tags">
           <el-checkbox label="居家" name="居家"></el-checkbox>
           <el-checkbox label="方便" name="方便"></el-checkbox>
           <el-checkbox label="舒服" name="舒服"></el-checkbox>
@@ -67,7 +67,6 @@
             action=""
             list-type="picture-card"
             :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
             :http-request="httpRequest">
           <i class="el-icon-plus"></i>
         </el-upload>
@@ -163,9 +162,8 @@ export default {
         house_address_detail: "",
       },
       ruleForm: {
-        type:[],
+        house_tags:[],
         owner_id: 1,
-        mediator_id: 1,
         category_id: 1,
         house_title: "",
         house_address: "",
@@ -245,11 +243,7 @@ export default {
       console.log("submit!")
     },
     httpRequest (option) {
-      console.log(option)
       this.fileList.push(option)
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -262,9 +256,9 @@ export default {
       // 零碎数据合并
       this.ruleForm.house_address += this.ruleForm1.house_address_detail;
       this.ruleForm.house_type = this.house_type;
+      this.ruleForm.owner_id = this.$store.getters.getUser.user_id;
       this.ruleForm.publish_time = new Date();
       formData.append('house',new Blob([JSON.stringify(this.ruleForm)], { type: 'application/json' }));
-      console.log(formData)
       this.fileList.forEach((it) => {
         formData.append('file', it.file)
       });
@@ -283,7 +277,6 @@ export default {
           return false;
         }
       })
-
     }
   }
 }

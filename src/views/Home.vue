@@ -70,78 +70,18 @@ export default {
         describes: '房子2'
       }
     ];
-    this.houseList = [
-      {
-        house_id: 1,
-        category_id: 1,
-        house_title: '吉房出租',
-        house_price: 36.5,
-        house_address: '莱山区开心小区',
-        house_sort: '学区房',
-        house_picture: require("../assets/imgs/img01.png")
-      },
-      {
-        house_id: 2,
-        category_id: 2,
-        house_title: '吉房出租',
-        house_price: 75,
-        house_address: '莱山区快乐小区',
-        house_sort: '医院房',
-        house_picture: require("../assets/imgs/img01.png")
-      },
-      {
-        house_id: 3,
-        category_id: 1,
-        house_title: '吉房出租',
-        house_price: 75,
-        house_address: '莱山区快乐小区',
-        house_sort: '医院房',
-        house_picture: require("../assets/imgs/img01.png")
-      },
-      {
-        house_id: 4,
-        category_id: 1,
-        house_title: '吉房出租',
-        house_price: 75,
-        house_address: '莱山区快乐小区',
-        house_sort: '医院房',
-        house_picture: require("../assets/imgs/img01.png")
-      },{
-        house_id: 5,
-        category_id: 1,
-        house_title: '吉房出租',
-        house_price: 75,
-        house_address: '莱山区快乐小区',
-        house_sort: '医院房',
-        house_picture: require("../assets/imgs/img01.png")
-      },{
-        house_id: 6,
-        category_id: 1,
-        house_title: '吉房出租',
-        house_price: 75,
-        house_address: '莱山区快乐小区',
-        house_sort: '医院房',
-        house_picture: require("../assets/imgs/img01.png")
-      },{
-        house_id: 7,
-        category_id: 1,
-        house_title: '吉房出租',
-        house_price: 75,
-        house_address: '莱山区快乐小区',
-        house_sort: '医院房',
-        house_picture: require("../assets/imgs/img01.png")
-      }
-    ]
-    this.getHouse("allHouse","houseList");
     this.getHouse("hotHouse","hotHouseList");
+    this.getHouse("schoolHouse","schoolHouseList");
+    this.getHouse("hospitalHouse","hospitalHouseList");
+    this.houseList = this.hotHouseList;
   },
   data() {
     return {
       carousel: "", // 轮播图数据
-      houseList: "", // 二手房列表
-      hotHouseList: "", // 热门二手房列表
-      schoolHouseList: "", // 学区房列表
-      hospitalHouseList: "",// 医院房
+      houseList: [], // 二手房列表
+      hotHouseList: [], // 热门二手房列表
+      schoolHouseList: [], // 学区房列表
+      hospitalHouseList: [],// 医院房
       houseActive: 1, // 选中的房屋分类
     }
   },
@@ -149,9 +89,9 @@ export default {
     houseActive: function (val){
       // 页面初始化的时候直接把hotHouseList赋值给houseList
       // 所以在切换列表时判断hotHouseList是否为空,为空则是第一次切换,把houseList赋值给hotHouseList
-      if (this.hotHouseList === "") {
-        this.hotHouseList = this.houseList;
-      }
+      // if (this.houseList.length === 0) {
+      //   this.houseList = this.hotHouseList;
+      // }
       if (val === 1) {
         // 1热门商品
         this.houseList = this.hotHouseList;
@@ -168,18 +108,31 @@ export default {
     }
   },
   methods: {
-    // 获取家电模块子组件传过来的数据
+    // 获取子组件传过来的数据
     getChildMsg(val) {
       this.houseActive = val;
     },
-    // 获取各类房子封装，只要7个！！！
+    // 获取各类房子封装
     getHouse(categoryName, val) {
+      let category_id = 0;
+      switch (categoryName){
+        case "hotHouse": category_id = 1;break;
+        case "schoolHouse": category_id = 2;break;
+        case "hospitalHouse": category_id = 3;break;
+        default: category_id = 0;
+      }
       this.axios
           .post('/house/getHouse', {
-            categoryName
+            categoryID: category_id,
+            pageNum: 1,
+            pageSize: 7
           })
           .then(res => {
-            this[val] = res.data.data;
+            for (var i = 0; i < res.data.data.list.length; i++) {
+              var obj = {};
+              obj = res.data.data.list[i];
+              this[val].push(obj);
+            }
           })
           .catch(err => {
             return Promise.reject(err);

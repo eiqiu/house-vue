@@ -115,18 +115,9 @@ export default {
   components: {MyInformation},
   beforeCreate() {
     this.activeIndex = this.$route.path;
-    this.axios.post('/test',{
-      user_name: 'admin123',
-      user_password: 'password123456'
-    }).then(res =>{
-      if (res.data.code === 200) {
-        this.setCategoryList(res.data.data);
-      }
-    })
   },
   data() {
     return {
-      testList: [],
       activeIndex: "/", // 头部导航栏选中的标签
       search: "", // 搜索条件
       register: false, // 是否显示注册组件
@@ -134,6 +125,13 @@ export default {
     }
   },
   created() {
+    this.axios.post("/house/getCategory").then(res => {
+      if (res.data.code === 200){
+        this.setCategoryList(res.data.data)
+      }
+    }).catch(err => {
+      return Promise.reject(err);
+    })
     // 获取浏览器localStorage，判断用户是否已经登录
     if (localStorage.getItem("user")){
       // 如果已经登录，设置vuex登录状态

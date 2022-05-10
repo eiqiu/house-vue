@@ -10,14 +10,14 @@
     <el-dialog title="登录" width="300px" center :visible.sync="isLogin">
       <el-form :model="LoginUser" :rules="rules" status-icon ref="ruleForm" class="demo-ruleForm">
         <el-form-item prop="name">
-          <el-input prefix-icon="el-icon-user-solid" placeholder="请输入账号" v-model="LoginUser.name"></el-input>
+          <el-input prefix-icon="el-icon-user-solid" placeholder="请输入账号" v-model="LoginUser.account"></el-input>
         </el-form-item>
         <el-form-item prop="pass">
           <el-input
               prefix-icon="el-icon-view"
               type="password"
               placeholder="请输入密码"
-              v-model="LoginUser.pass"
+              v-model="LoginUser.password"
           ></el-input>
         </el-form-item>
         <el-form-item>
@@ -33,46 +33,43 @@ import { mapActions } from "vuex";
 export default {
   name: "MyLogin",
   data() {
-    // 用户名的校验方法
-    let validateName = (rule, value, callback) => {
-      if (!value) {
-        return callback(new Error("请输入用户名"));
-      }
-      // 用户名以字母开头,长度在5-16之间,允许字母数字下划线
-      const userNameRule = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;
-      if (userNameRule.test(value)) {
-        this.$refs.ruleForm.validateField("checkPass");
-        return callback();
-      } else {
-        return callback(new Error("字母开头,长度5-16之间,允许字母数字下划线"));
-      }
-    };
-    // 密码的校验方法
-    let validatePass = (rule, value, callback) => {
-      if (value === "") {
-        return callback(new Error("请输入密码"));
-      }
-      // 密码以字母开头,长度在6-18之间,允许字母数字和下划线
-      const passwordRule = /^[a-zA-Z]\w{5,17}$/;
-      if (passwordRule.test(value)) {
-        this.$refs.ruleForm.validateField("checkPass");
-        return callback();
-      } else {
-        return callback(
-            new Error("字母开头,长度6-18之间,允许字母数字和下划线")
-        );
-      }
-    };
+    // // 用户名的校验方法
+    // let validateName = (rule, value, callback) => {
+    //   if (!value) {
+    //     return callback(new Error("请输入用户名"));
+    //   }
+    //   // 用户名以字母开头,长度在5-16之间,允许字母数字下划线
+    //   const userNameRule = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;
+    //   if (userNameRule.test(value)) {
+    //     this.$refs.ruleForm.validateField("checkPass");
+    //     return callback();
+    //   } else {
+    //     return callback(new Error("字母开头,长度5-16之间,允许字母数字下划线"));
+    //   }
+    // };
+    // // 密码的校验方法
+    // let validatePass = (rule, value, callback) => {
+    //   if (value === "") {
+    //     return callback(new Error("请输入密码"));
+    //   }
+    //   // 密码以字母开头,长度在6-18之间,允许字母数字和下划线
+    //   const passwordRule = /^[a-zA-Z]\w{5,17}$/;
+    //   if (passwordRule.test(value)) {
+    //     this.$refs.ruleForm.validateField("checkPass");
+    //     return callback();
+    //   } else {
+    //     return callback(
+    //         new Error("字母开头,长度6-18之间,允许字母数字和下划线")
+    //     );
+    //   }
+    // };
     return {
       LoginUser: {
-        name: "",
-        pass: ""
+        account: "",
+        password: ""
       },
       // 用户信息校验规则,validator(校验方法),trigger(触发方式),blur为在组件 Input 失去焦点时触发
-      rules: {
-        name: [{ validator: validateName, trigger: "blur" }],
-        pass: [{ validator: validatePass, trigger: "blur" }]
-      }
+      rules: {}
     };
   },
   computed: {
@@ -95,10 +92,7 @@ export default {
         //如果通过校验开始登录
         if (valid) {
           this.axios
-              .post("/login", {
-                user_name: this.LoginUser.name,
-                user_password: this.LoginUser.pass
-              })
+              .post("/user/login", {user_account: this.LoginUser.account, user_password: this.LoginUser.password})
               .then(res => {
                 // “200”代表登录成功，其他的均为失败
                 if (res.data.code === 200) {

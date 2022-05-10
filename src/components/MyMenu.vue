@@ -28,7 +28,6 @@ export default {
   methods: {
     // 通过mouseover事件控制当前显示的商品分类，1为该类别的热门商品
     mouseover(e, val) {
-      console.log('MyMenu----------'+val)
       this.activeClass = val;
     }
   },

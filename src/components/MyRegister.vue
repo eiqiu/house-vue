@@ -50,26 +50,30 @@ export default {
   name: "MyRegister",
   props: ["register"],
   data() {
-    // 用户名的校验方法
+    // 用户名的校验方法以及验证是否存在该用户
     let validateName = (rule, value, callback) => {
       if (!value) {
         return callback(new Error("请输入用户名"));
       }
-      // 用户名以字母开头,长度在5-16之间,允许字母数字下划线
-      const userNameRule = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;
+      // 手机号
+      const userNameRule = /^(13[0-9]|14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9])\d{8}$/;
       if (userNameRule.test(value)) {
         //判断数据库中是否已经存在该用户名
         this.axios
-            .post("/user/findUserAccount", {
-              user_account: this.RegisterUser.name
-            })
+            .post("/user/ifExist", {user_account: this.RegisterUser.name} )
             .then(res => {
-              // 200代表用户名不存在，可以注册
+              // 200代表用户名存在，不可以注册
               if (res.data.code === 200) {
-                this.$refs.ruleForm.validateField("checkPass");
-                return callback();
-              } else {
-                return callback(new Error(res.data.msg));
+                // 网络正确 判断数据
+                console.log(res.data.data)
+                if (res.data.data === true){
+                  // 代表用户以被注册
+                  return callback(new Error(res.data.msg));
+                } else {
+                  // 代表用户可以注册
+                  this.$refs.ruleForm.validateField("checkPass");
+                  return callback();
+                }
               }
             })
             .catch(err => {

@@ -45,7 +45,7 @@
           </p>
         </router-link>
       </li>
-      <li v-show="isMore && list.length>=1" id="more">
+      <li v-show="isMore && list.length>=7" id="more">
         <router-link :to="{ path: '/house', query: {categoryID: this.categoryID}}">
           浏览更多
           <i class="el-icon-d-arrow-right"></i>
