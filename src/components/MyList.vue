@@ -10,25 +10,25 @@
     <ul>
       <li v-for="item in list" :key="item.house_id">
         <el-popover placement="top">
-          <p>确定删除吗？</p>
+          <p>确定取消收藏吗？</p>
           <div style="text-align: right; margin: 10px 0 0">
             <el-button type="primary" size="mini" @click="deleteCollect(item.house_id)">确定</el-button>
           </div>
           <i class="el-icon-close delete" slot="reference" v-show="isDelete"></i>
         </el-popover>
         <!-- 我的房子 -->
-        <img src="../assets/imgs/img01.png" alt v-if="myHouse">
+        <img :src="$target + item.pictures[0].src" alt v-if="myHouse">
         <h2 v-if="myHouse"><i class="el-icon-map-location"></i>{{item.house_title}}</h2>
         <h3 v-if="myHouse">{{item.house_address}}</h3>
         <el-button-group v-if="myHouse">
           <router-link :to="{path: '/house/editMyHouse', query:{houseID:item.house_id}}">
             <i class="el-icon-edit edit-icon" style="padding-left: 90px"></i>
           </router-link>
-          <i class="el-icon-delete-solid delete-icon" @click="deleteMyHouse(item.house_id)" style="padding-left: 20px"></i>
+          <i class="el-icon-delete-solid delete-icon" @click="openDelete(item.house_id)" style="padding-left: 20px"></i>
         </el-button-group>
         <!-- 我的收藏 -->
         <router-link :to="{ path: '/house/details', query: {houseID:item.house_id} }" v-else-if="isDelete">
-          <img src="../assets/imgs/img01.png" alt />
+          <img :src="$target + item.pictures[0].src" alt />
           <h2>{{item.house_title}}</h2>
           <h3><i class="el-icon-map-location"></i>{{item.house_address}}</h3>
           <p>
@@ -37,7 +37,7 @@
         </router-link>
         <!-- 一般情况 -->
         <router-link :to="{ path: '/house/details', query: {houseID:item.house_id} }" v-else>
-          <img src="../assets/imgs/img01.png" alt />
+          <img :src="$target + item.pictures[0].src" alt />
           <h2>{{item.house_title}}</h2>
           <h3><i class="el-icon-map-location"></i>{{item.house_address}}</h3>
           <p>
@@ -89,8 +89,8 @@ export default {
     }
   },
   methods: {
+    // 删除我的房屋
     deleteMyHouse(house_id) {
-      this.notifySucceed("删除成功！！！！");
       this.axios
           .post("/house/deleteMyHouse", {
             user_id: this.$store.getters.getUser.user_id,
@@ -122,19 +122,17 @@ export default {
     },
     // 我的收藏
     deleteCollect(house_id) {
-      this.notifySucceed("删除成功！！！！");
       this.axios
-          .post("/user/collect/deleteCollect", {
+          .post("/house/deleteCollection", {
             user_id: this.$store.getters.getUser.user_id,
             house_id: house_id
           })
           .then(res => {
             switch (res.data.code) {
-              case "200":
-                // 删除成功
-                // 删除删除列表中的该商品信息
+              case 200:
                 for (let i = 0; i < this.list.length; i++) {
                   const temp = this.list[i];
+                  console.log(this.list[i])
                   if (temp.house_id === house_id) {
                     // eslint-disable-next-line vue/no-mutating-props
                     this.list.splice(i, 1);
@@ -151,6 +149,24 @@ export default {
           .catch(err => {
             return Promise.reject(err);
           });
+    },
+    openDelete(house_id) {
+      this.$confirm('确定要删除这个房子吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteMyHouse(house_id);
+        this.$message({
+          type: 'success',
+          message: '删除成功!'+house_id
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 };

@@ -51,14 +51,6 @@
       <el-form-item label="看房时间">
         <el-input v-model="ruleForm.viewing_time" style="width: 480px"></el-input>
       </el-form-item>
-      <el-form-item label="标签">
-        <el-checkbox-group v-model="ruleForm.house_tags">
-          <el-checkbox label="居家" name="居家"></el-checkbox>
-          <el-checkbox label="方便" name="方便"></el-checkbox>
-          <el-checkbox label="舒服" name="舒服"></el-checkbox>
-          <el-checkbox label="美观" name="美观"></el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
       <el-form-item label="房屋描述">
         <el-input type="textarea" v-model="ruleForm.house_description" style="width: 480px"></el-input>
       </el-form-item>
@@ -162,7 +154,7 @@ export default {
         house_address_detail: "",
       },
       ruleForm: {
-        house_tags:[],
+        house_id: '',
         owner_id: 1,
         category_id: 1,
         house_title: "",
@@ -254,7 +246,7 @@ export default {
       // 使用formData
       const formData = new FormData();
       // 零碎数据合并
-      this.ruleForm.house_address += this.ruleForm1.house_address_detail;
+      this.ruleForm.house_address += ","+this.ruleForm1.house_address_detail;
       this.ruleForm.house_type = this.house_type;
       this.ruleForm.owner_id = this.$store.getters.getUser.user_id;
       this.ruleForm.publish_time = new Date();

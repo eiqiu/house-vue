@@ -51,21 +51,13 @@
       <el-form-item label="看房时间">
         <el-input v-model="ruleForm.viewing_time" style="width: 480px"></el-input>
       </el-form-item>
-      <el-form-item label="标签">
-        <el-checkbox-group v-model="ruleForm.type">
-          <el-checkbox label="居家" name="居家"></el-checkbox>
-          <el-checkbox label="方便" name="方便"></el-checkbox>
-          <el-checkbox label="舒服" name="舒服"></el-checkbox>
-          <el-checkbox label="美观" name="美观"></el-checkbox>
-        </el-checkbox-group>
-      </el-form-item>
       <el-form-item label="房屋描述">
         <el-input type="textarea" v-model="ruleForm.house_description" style="width: 480px"></el-input>
       </el-form-item>
       <el-form-item label="图片信息">
         <el-carousel style="height: 300px;width: 300px">
-          <el-carousel-item v-for="item in ruleForm.house_picture" :key="item.category_id">
-            <img style="height:300px;" :src="$target + item.imgPath" :alt="item.describes" />
+          <el-carousel-item v-for="item in house_picture" :key="item.picture_id">
+            <img style="height:300px;" :src="$target + item.src" />
           </el-carousel-item>
         </el-carousel>
         <el-button @click="change">修改</el-button>
@@ -156,34 +148,57 @@ import citydata from "@/assets/cityDate/citydata";
 import {mapGetters} from "vuex";
 export default {
   name: 'EditHouse',
-  created() {
-    this.house = {
-      house_id: 7,
-      category_id: 1,
-      house_title: '吉房出租',
-      house_price: 75,
-      house_address: '莱山区快乐小区',
-      house_sort: '医院房',
-    }
+  activated() {
     this.axios.post('/house/getHouseByID',{
-      house_id: this.$route.query
+      house_id: this.$route.query.houseID
     }).then(res => {
       if (res.data.code === 200) {
-        this.house = res.data.data;
+        // 基本赋值
+        this.ruleForm.owner_id = res.data.data.owner_id;
+        this.ruleForm.bargain = res.data.data.bargain;
+        this.ruleForm.building_structure = res.data.data.building_structure;
+        this.ruleForm.building_type = res.data.data.building_type;
+        this.ruleForm.elevator = res.data.data.elevator;
+        this.ruleForm.heating_mode = res.data.data.heating_mode;
+        this.ruleForm.house_address = res.data.data.house_address;
+        this.ruleForm.house_area = res.data.data.house_area;
+        this.ruleForm.house_decoration = res.data.data.house_decoration;
+        this.ruleForm.house_description = res.data.data.house_description;
+        this.ruleForm.house_ladder = res.data.data.house_ladder;
+        this.ruleForm.house_id = res.data.data.house_id;
+        this.ruleForm.house_price = res.data.data.house_price;
+        this.ruleForm.house_structure = res.data.data.house_structure;
+        this.ruleForm.house_title = res.data.data.house_title;
+        this.ruleForm.house_towards = res.data.data.house_towards;
+        this.ruleForm.surrounding_facilities = res.data.data.surrounding_facilities;
+        this.ruleForm.transportation = res.data.data.transportation;
+        this.ruleForm.viewing_time = res.data.data.viewing_time;
+        this.ruleForm.category_id = res.data.data.category_id;
+        // 复杂赋值
+        this.ruleForm1.num_shi = res.data.data.house_type[0];
+        this.ruleForm1.num_ting = res.data.data.house_type[2];
+        this.ruleForm1.num_chu = res.data.data.house_type[4];
+        this.ruleForm1.num_wei = res.data.data.house_type[6];
+        // 地址赋值
+        let arr = res.data.data.house_address.split(',');
+        let address_detail = arr.pop();
+        this.ruleForm1.house_address_detail = address_detail;
+        this.ruleForm.house_address = arr;
+        // 图片赋值
+        this.house_picture = res.data.data.pictures;
       }else {
         this.notifyError(res.data.msg);
       }
     }).catch(err => {
       return Promise.reject(err);
     });
-    this.ruleForm.house_title = this.house.house_title;
   },
   data() {
     return {
       dialogImageUrl: '',
       dialogVisible: false,
       fileList: [],
-      house: '',
+      house_picture: [],
       ruleForm1: {
         num_shi: 0,
         num_ting: 0,
@@ -193,9 +208,8 @@ export default {
         house_address_detail: "",
       },
       ruleForm: {
-        type:[],
+        house_id: '',
         owner_id: '',
-        mediator_id: '',
         category_id: '',
         house_title: "",
         house_address: "",
@@ -217,23 +231,6 @@ export default {
         surrounding_facilities: "",
         house_description: "",
         house_state: false,
-        house_picture: [
-          {
-            category_id: 1,
-            imgPath: 'img01.png',
-            describes: '1'
-          },
-          {
-            category_id: 2,
-            imgPath: 'img02.png',
-            describes: '2'
-          },
-          {
-            category_id: 3,
-            imgPath: 'img03.png',
-            describes: '3'
-          }
-        ]
       },
       rules: {
         house_title: [
@@ -308,7 +305,7 @@ export default {
       // 使用formData
       const formData = new FormData();
       // 零碎数据合并
-      this.ruleForm.house_address += this.ruleForm1.house_address_detail;
+      this.ruleForm.house_address += ","+this.ruleForm1.house_address_detail;
       this.ruleForm.house_type = this.house_type;
       this.ruleForm.publish_time = new Date();
       formData.append('house',new Blob([JSON.stringify(this.ruleForm)], { type: 'application/json' }));
@@ -317,7 +314,7 @@ export default {
       });
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
-          this.axios.post('/house/changeHouse',formData).then(res => {
+          this.axios.post('/house/modifyHouse',formData).then(res => {
             if (res.data.code === 200) {
               this.notifySucceed(res.data.msg);
             }else {

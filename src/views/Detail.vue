@@ -19,14 +19,8 @@
       <!-- 左侧房屋轮播图 -->
       <div class="block">
         <el-carousel height="560px">
-          <el-carousel-item>
-            <img style="height:560px;" src="../assets/imgs/img8001.png" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img style="height:560px;" src="../assets/imgs/img8002.png" />
-          </el-carousel-item>
-          <el-carousel-item>
-            <img style="height:560px;" src="../assets/imgs/img8003.png" />
+          <el-carousel-item v-for="item in houseDetails.pictures" :key="item.picture_id">
+            <img style="height:560px;" :src="$target + item.src" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -51,7 +45,7 @@
         <!-- 内容区底部按钮 -->
         <div class="button">
           <el-button class="contact" @click="contact">立即联系</el-button>
-          <el-button v-if="this.dis" class="like" @click="addCollect">收藏</el-button>
+          <el-button v-if="this.dis === false" class="like" @click="addCollect">收藏</el-button>
           <el-button v-else class="like" @click="removeCollect">取消收藏</el-button>
         </div>
         <!-- 内容区底部按钮END -->
@@ -102,7 +96,7 @@ export default {
   name: 'Detail',
   data() {
     return {
-      dis: true, // 检查是否是已收藏，默认是false
+      dis: false, // 检查是否是已收藏，默认是false
       houseID: "", // 商品id
       houseDetails: "", // 商品详细信息
     };
@@ -158,7 +152,7 @@ export default {
         return;
       }
       this.axios
-          .post("/house/addCollect", {
+          .post("/house/addCollection", {
             user_id: this.$store.getters.getUser.user_id,
             house_id: this.houseID
           })
@@ -177,7 +171,7 @@ export default {
     },
     // 取消收藏
     removeCollect(){
-      this.axios.post('/user/collect/removeCollect',{
+      this.axios.post('/house/deleteCollection',{
         user_id: this.$store.getters.getUser.user_id,
         house_id: this.houseID
       }).then(res => {
@@ -198,6 +192,7 @@ export default {
         user_id: this.$store.getters.getUser.user_id,
         house_id: this.houseID
       }).then(res => {
+        console.log(res.data.data)
         this.dis = res.data.data;
       }).catch(err => {
         return Promise.reject(err);

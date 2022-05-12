@@ -34,17 +34,25 @@ export default {
   name: "MyHouse",
   data() {
     return{
-      myHouseList: [
-        {
-          house_id: 2,
-          house_title: '吉房出售',
-          house_price: 75,
-          house_address: '莱山区快乐小区',
-          house_sort: '医院房',
-          house_picture: require("../assets/imgs/img01.png")
-        }
-      ]
+      myHouseList: []
     }
+  },
+  activated() {
+    // 获取收藏数据
+    this.axios
+        .post("/house/getMyHouse", {
+          myHouse_user_id: this.$store.getters.getUser.user_id,
+          pageNum: 1,
+          pageSize: 10
+        })
+        .then(res => {
+          if (res.data.code === 200) {
+            this.myHouseList = res.data.data.list;
+          }
+        })
+        .catch(err => {
+          return Promise.reject(err);
+        });
   }
 }
 </script>

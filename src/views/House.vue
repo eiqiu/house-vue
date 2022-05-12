@@ -178,14 +178,14 @@ export default {
     getHouseBySearch() {
       // console.log('调用了搜索方法'+this.search)
       this.axios
-          .post("/house/getHouseBySearch", {
-            search: this.search,
-            currentPage: this.currentPage,
+          .post("/house/searchHouse", {
+            keywords: this.search,
+            pageNum: this.currentPage,
             pageSize: this.pageSize
           })
           .then(res => {
-            this.houseList = res.data.data;
-            this.total = res.data.total;
+            this.houseList = res.data.data.list;
+            this.total = res.data.data.total;
           })
           .catch(err => {
             return Promise.reject(err);

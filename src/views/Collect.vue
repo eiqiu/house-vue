@@ -35,35 +35,20 @@ export default {
   name: "Collect",
   data() {
     return{
-      collectList: [
-        {
-          house_id: 1,
-          house_price: 75,
-          house_title: '吉房出租',
-          house_address: '莱山区快乐小区',
-          house_sort: '医院房',
-          house_picture: require("../assets/imgs/img01.png")
-        },
-        {
-          house_id: 2,
-          house_price: 75,
-          house_title: '吉房出租',
-          house_address: '莱山区快乐小区',
-          house_sort: '医院房',
-          house_picture: require("../assets/imgs/img01.png")
-        }
-      ]
+      collectList: []
     };
   },
   activated() {
     // 获取收藏数据
     this.axios
-        .post("/collect/getCollect", {
-          user_id: this.$store.getters.getUser.user_id
+        .post("/house/getCollection", {
+          collected_user_id: this.$store.getters.getUser.user_id,
+          pageNum: 1,
+          pageSize: 10
         })
         .then(res => {
           if (res.data.code === 200) {
-            this.collectList = res.data.data;
+            this.collectList = res.data.data.list;
           }
         })
         .catch(err => {

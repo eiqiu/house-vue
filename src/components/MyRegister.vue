@@ -53,7 +53,7 @@ export default {
     // 用户名的校验方法以及验证是否存在该用户
     let validateName = (rule, value, callback) => {
       if (!value) {
-        return callback(new Error("请输入用户名"));
+        return callback(new Error("请输入手机号"));
       }
       // 手机号
       const userNameRule = /^(13[0-9]|14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9])\d{8}$/;
@@ -80,7 +80,7 @@ export default {
               return Promise.reject(err);
             });
       } else {
-        return callback(new Error("字母开头,长度5-16之间,允许字母数字下划线"));
+        return callback(new Error("请输入正确格式的手机号！"));
       }
     };
     // 密码的校验方法
