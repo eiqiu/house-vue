@@ -12,7 +12,7 @@
       <div class="topbar">
         <div class="nav">
           <ul>
-<!--            用户是否登陆-->
+            <!--用户是否登陆-->
             <li v-if="!this.$store.getters.getUser">
               <el-button type="text" @click="login">登录</el-button>
               <span class="sep">|</span>
@@ -40,6 +40,9 @@
               <router-link to="/myHouse">
                 <i class="el-icon-s-home"></i> 我的发布
               </router-link>
+            </li>
+            <li>
+              <router-link to="/chat">我的消息</router-link>
             </li>
           </ul>
         </div>

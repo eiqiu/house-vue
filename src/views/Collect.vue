@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 我的收藏
+ * @Description: 我的收藏
  * @Author: house-team
  * @Date: 2022/4/27
  * @LastEditors:

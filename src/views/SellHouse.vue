@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 出售自己的房子
+ * @Description: 出售自己的房子
  * @Author: house-team
  * @Date: 2022/4/26
  * @LastEditors:
@@ -9,7 +9,7 @@
   <div id="sell-house">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
       <span style="font-weight: bold;line-height: 50px">基本资料：</span>
-      <el-form-item label="标题">
+      <el-form-item label="标题" prop="house_title">
         <el-input v-model="ruleForm.house_title" style="width: 480px"></el-input>
       </el-form-item>
       <el-form-item label="地址">
@@ -18,7 +18,7 @@
       </el-form-item>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="价格">
+          <el-form-item label="价格" prop="house_price">
             <el-input v-model="ruleForm.house_price" style="width: 200px"></el-input>
           </el-form-item>
         </el-col>
@@ -231,8 +231,8 @@ export default {
   },
   methods: {
     // 重置表单
-    resetForm() {
-      console.log("submit!")
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
     httpRequest (option) {
       this.fileList.push(option)

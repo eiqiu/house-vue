@@ -93,12 +93,11 @@ export default {
     deleteMyHouse(house_id) {
       this.axios
           .post("/house/deleteMyHouse", {
-            user_id: this.$store.getters.getUser.user_id,
             house_id: house_id
           })
           .then(res => {
             switch (res.data.code) {
-              case "200":
+              case 200:
                 // 删除成功
                 // 删除删除列表中的该商品信息
                 for (let i = 0; i < this.list.length; i++) {

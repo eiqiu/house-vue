@@ -15,6 +15,11 @@ const routes = [
     component: () => import('../views/House')
   },
   {
+    path: '/about',
+    name: 'About',
+    component: () => import('../views/About')
+  },
+  {
     path: '/house/details',
     name: 'Details',
     component: () => import('../views/Detail')
@@ -38,6 +43,11 @@ const routes = [
     path: '/myHouse',
     name: 'MyHouse',
     component: () => import('../views/MyHouse')
+  },
+  {
+    path: '/chat',
+    name: 'Chat',
+    component: () => import("../views/Chat")
   }
 ]
 

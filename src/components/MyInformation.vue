@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 描述
+ * @Description: 描述
  * @Author: house-team
  * @Date: 2022/5/5
  * @LastEditors:
@@ -59,7 +59,6 @@ export default {
   name: "MyInformation",
   created() {
     let user = this.$store.getters.getUser;
-    console.log(user)
     let adddress = user.user_address.split(",");
     this.user_address = adddress.slice(0,3);
     this.user_address_detail = adddress.pop();
@@ -110,6 +109,10 @@ export default {
             if (res.data.code === 200){
               this.isInformation = false;
               this.notifySucceed(res.data.msg);
+              // 清除之前的信息
+              let user = JSON.stringify(res.data.data);
+              localStorage.setItem("user",user);
+              this.setUser(res.data.data);
             }
           }).catch(err => {
         return new Promise.reject(err);

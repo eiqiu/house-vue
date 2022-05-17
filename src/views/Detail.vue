@@ -112,6 +112,7 @@ export default {
     }else {
       this.ifCollected();
     }
+    this.axios.post("/house/addClick",{house_id: this.houseID});
   },
   watch: {
     // 监听商品id的变化，请求后端获取商品数据
@@ -199,7 +200,7 @@ export default {
       })
     },
     contact() {
-      alert("敬请期待");
+      this.$router.push({path: '/chat', query: {userID: this.houseDetails.owner_id}});
     }
   }
 };

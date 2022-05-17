@@ -105,7 +105,7 @@ export default {
         return callback(new Error("请输入确认密码"));
       }
       // 校验是否以密码一致
-      if (this.RegisterUser.pass != "" && value === this.RegisterUser.pass) {
+      if (this.RegisterUser.pass !== "" && value === this.RegisterUser.pass) {
         this.$refs.ruleForm.validateField("checkPass");
         return callback();
       } else {
@@ -148,14 +148,13 @@ export default {
       this.$refs["ruleForm"].validate(valid => {
         //如果通过校验开始注册
         if (valid) {
-          console.log("执行注册")
           this.axios
               .post("/user/register", {
                 user_account: this.RegisterUser.name,
                 user_password: this.RegisterUser.pass
               })
               .then(res => {
-                // “001”代表注册成功，其他的均为失败
+                // 200代表注册成功，其他的均为失败
                 if (res.data.code === 200) {
                   // 隐藏注册组件
                   this.isRegister = false;
