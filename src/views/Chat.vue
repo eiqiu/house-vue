@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 描述
+ * @Description: 聊天界面，未开发
  * @Author: house-team
  * @Date: 2022/5/17
  * @LastEditors:

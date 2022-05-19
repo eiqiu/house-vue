@@ -27,27 +27,34 @@ const routes = [
   {
     path: '/house/editMyHouse',
     name: 'EditMyHouse',
-    component: () => import('../views/EditHouse')
+    component: () => import('../views/EditHouse'),
+    meta: {
+      requireAuth: true // 需要验证登录状态
+    }
   },
   {
     path: '/sellHouse',
     name: 'SellHouse',
-    component: () => import('../views/SellHouse')
+    component: () => import('../views/SellHouse'),
+    meta: {
+      requireAuth: true // 需要验证登录状态
+    }
   },
   {
     path: '/collect',
     name: 'Collect',
-    component: () => import('../views/Collect')
+    component: () => import('../views/Collect'),
+    meta: {
+      requireAuth: true // 需要验证登录状态
+    }
   },
   {
     path: '/myHouse',
     name: 'MyHouse',
-    component: () => import('../views/MyHouse')
-  },
-  {
-    path: '/chat',
-    name: 'Chat',
-    component: () => import("../views/Chat")
+    component: () => import('../views/MyHouse'),
+    meta: {
+      requireAuth: true // 需要验证登录状态
+    }
   }
 ]
 

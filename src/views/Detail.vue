@@ -71,7 +71,7 @@
     <!-- 主要内容END -->
     <!-- 底部详细内容区 -->
     <div class="base-info">
-      <el-descriptions title="详细信息" :column="4" border labelStyle="font-size:14px;font-weight:700;color:black;">
+      <el-descriptions title="详细信息" :column="4" border>
         <el-descriptions-item label="类型">{{this.houseDetails.house_type}}</el-descriptions-item>
         <el-descriptions-item label="面积">{{ this.houseDetails.house_area }}</el-descriptions-item>
         <el-descriptions-item label="户型" :span="2">{{ this.houseDetails.house_type }}</el-descriptions-item>
@@ -161,6 +161,7 @@ export default {
             if (res.data.code === 200) {
               // 添加收藏成功
               this.notifySucceed(res.data.msg);
+              this.dis = true;
             } else {
               // 添加收藏失败
               this.notifyError(res.data.msg);
@@ -179,6 +180,7 @@ export default {
         if (res.data.code === 200) {
           // 取消收藏成功
           this.notifySucceed(res.data.msg);
+          this.dis = false;
         } else {
           // 取消收藏失败
           this.notifyError(res.data.msg);
@@ -193,14 +195,13 @@ export default {
         user_id: this.$store.getters.getUser.user_id,
         house_id: this.houseID
       }).then(res => {
-        console.log(res.data.data)
         this.dis = res.data.data;
       }).catch(err => {
         return Promise.reject(err);
       })
     },
     contact() {
-      this.$router.push({path: '/chat', query: {userID: this.houseDetails.owner_id}});
+      this.notifySucceed("功能还未完善");
     }
   }
 };
@@ -258,9 +259,6 @@ export default {
   width: 560px;
   height: 560px;
 }
-#details .el-carousel .el-carousel__indicator .el-carousel__button {
-  background-color: rgba(163, 163, 163, 0.8);
-}
 #details .main .content {
   float: left;
   margin-left: 25px;
@@ -293,12 +291,6 @@ export default {
   font-size: 20px;
   font-weight: bold;
 }
-/*#details .main .content .price .del {*/
-/*  font-size: 14px;*/
-/*  margin-left: 10px;*/
-/*  color: #b0b0b0;*/
-/*  text-decoration: line-through;*/
-/*}*/
 #details .main .content .house-list {
   background: #f9f9fa;
   padding: 30px 60px;

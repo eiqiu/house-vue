@@ -1,5 +1,5 @@
 <!--
- * @FileDescription: 关于我们
+ * @Description: 关于我们
  * @Author: house-team
  * @Date: 2022/5/16
  * @LastEditors:

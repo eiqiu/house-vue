@@ -1,5 +1,5 @@
 <!--
- * @Description: 描述
+ * @Description: 主页菜单选项卡组件
  * @Author: house-team
  * @Date: 2022/4/25
  * @LastEditors:

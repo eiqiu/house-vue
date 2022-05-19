@@ -41,9 +41,6 @@
                 <i class="el-icon-s-home"></i> 我的发布
               </router-link>
             </li>
-            <li>
-              <router-link to="/chat">我的消息</router-link>
-            </li>
           </ul>
         </div>
       </div>

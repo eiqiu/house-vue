@@ -1,5 +1,5 @@
 <!--
- * @Description: 描述
+ * @Description: 个人信息组件
  * @Author: house-team
  * @Date: 2022/5/5
  * @LastEditors:
@@ -59,9 +59,14 @@ export default {
   name: "MyInformation",
   created() {
     let user = this.$store.getters.getUser;
-    let adddress = user.user_address.split(",");
-    this.user_address = adddress.slice(0,3);
-    this.user_address_detail = adddress.pop();
+    let address = [];
+    if (user.user_address === null) {
+      address = [];
+    }else{
+      address = user.user_address.split(",");
+    }
+    this.user_address = address.slice(0,3);
+    this.user_address_detail = address.pop();
     this.UserInformation.user_age = user.user_age;
     this.UserInformation.user_name = user.user_name;
     this.UserInformation.user_tel = user.user_tel;

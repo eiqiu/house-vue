@@ -13,8 +13,10 @@
         <el-input v-model="ruleForm.house_title" style="width: 480px"></el-input>
       </el-form-item>
       <el-form-item label="地址">
-        <el-cascader style="width: 200px" v-model="ruleForm.house_address" :options="citydata" :props="{ expandTrigger: 'hover' }"></el-cascader>
-        &nbsp;详细地址：<el-input v-model="ruleForm1.house_address_detail" style="width: 200px"></el-input>
+        <el-cascader style="width: 200px" v-model="ruleForm.house_address" :options="citydata"
+                     :props="{ expandTrigger: 'hover' }"></el-cascader>
+        &nbsp;详细地址：
+        <el-input v-model="ruleForm1.house_address_detail" style="width: 200px"></el-input>
       </el-form-item>
       <el-row>
         <el-col :span="8">
@@ -69,11 +71,21 @@
       <span style="font-weight: bold;line-height: 50px">详细资料：</span>
       <el-row>
         <el-form-item label="房屋户型">
-            <el-input-number v-model="ruleForm1.num_shi" controls-position="right" :min="0" style="width: 100px"></el-input-number><el-tag>室</el-tag>&nbsp;
-            <el-input-number v-model="ruleForm1.num_ting" controls-position="right" :min="0" style="width: 100px"></el-input-number><el-tag>厅</el-tag>&nbsp;
-            <el-input-number v-model="ruleForm1.num_chu" controls-position="right" :min="0" style="width: 100px"></el-input-number><el-tag>厨</el-tag>&nbsp;
-            <el-input-number v-model="ruleForm1.num_wei" controls-position="right" :min="0" style="width: 100px"></el-input-number><el-tag>卫</el-tag>&nbsp;
-          <el-input-number v-model="ruleForm1.num_else" controls-position="right" :min="0" style="width: 100px"></el-input-number><el-tag>其他</el-tag>&nbsp;
+          <el-input-number v-model="ruleForm1.num_shi" controls-position="right" :min="0"
+                           style="width: 100px"></el-input-number>
+          <el-tag>室</el-tag>&nbsp;
+          <el-input-number v-model="ruleForm1.num_ting" controls-position="right" :min="0"
+                           style="width: 100px"></el-input-number>
+          <el-tag>厅</el-tag>&nbsp;
+          <el-input-number v-model="ruleForm1.num_chu" controls-position="right" :min="0"
+                           style="width: 100px"></el-input-number>
+          <el-tag>厨</el-tag>&nbsp;
+          <el-input-number v-model="ruleForm1.num_wei" controls-position="right" :min="0"
+                           style="width: 100px"></el-input-number>
+          <el-tag>卫</el-tag>&nbsp;
+          <el-input-number v-model="ruleForm1.num_else" controls-position="right" :min="0"
+                           style="width: 100px"></el-input-number>
+          <el-tag>其他</el-tag>&nbsp;
         </el-form-item>
       </el-row>
 
@@ -138,6 +150,7 @@
 <script>
 import citydata from "@/assets/cityDate/citydata";
 import {mapGetters} from "vuex";
+
 export default {
   name: 'SellHouseTest',
   data() {
@@ -155,8 +168,8 @@ export default {
       },
       ruleForm: {
         house_id: '',
-        owner_id: 1,
-        category_id: 1,
+        owner_id: "",
+        category_id: "",
         house_title: "",
         house_address: "",
         house_price: '',
@@ -186,47 +199,25 @@ export default {
             trigger: "blur",
           },
           {
-            min: 3,
-            max: 5,
-            message: "长度在 3 到 5 个字符",
+            min: 5,
+            max: 20,
+            message: "长度在 3 到 20 个字符",
             trigger: "blur",
           },
         ],
         house_address: {
           required: true,
           message: "请输入房子地址",
-          trigger: "change"
+          trigger: "blur"
         },
-        region: [
-          {
-            required: true,
-            message: "请选择活动区域",
-            trigger: "change",
-          },
-        ],
-        type: [
-          {
-            type: "array",
-            required: true,
-            message: "请至少选择一个活动性质",
-            trigger: "change",
-          },
-        ],
-        desc: [
-          {
-            required: true,
-            message: "请填写活动形式",
-            trigger: "blur",
-          },
-        ],
       },
       citydata
     }
   },
   computed: {
     ...mapGetters(["getCategoryList"]),
-    house_type: function (){
-      return  ''+this.ruleForm1.num_shi+'室'+this.ruleForm1.num_ting+'厅'+this.ruleForm1.num_chu+'厨'+this.ruleForm1.num_wei+'卫'+this.ruleForm1.num_else+'其他';
+    house_type: function () {
+      return '' + this.ruleForm1.num_shi + '室' + this.ruleForm1.num_ting + '厅' + this.ruleForm1.num_chu + '厨' + this.ruleForm1.num_wei + '卫' + this.ruleForm1.num_else + '其他';
     }
   },
   methods: {
@@ -234,7 +225,7 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
-    httpRequest (option) {
+    httpRequest(option) {
       this.fileList.push(option)
     },
     handlePictureCardPreview(file) {
@@ -246,26 +237,26 @@ export default {
       // 使用formData
       const formData = new FormData();
       // 零碎数据合并
-      this.ruleForm.house_address += ","+this.ruleForm1.house_address_detail;
+      this.ruleForm.house_address += "," + this.ruleForm1.house_address_detail;
       this.ruleForm.house_type = this.house_type;
       this.ruleForm.owner_id = this.$store.getters.getUser.user_id;
       this.ruleForm.publish_time = new Date();
-      formData.append('house',new Blob([JSON.stringify(this.ruleForm)], { type: 'application/json' }));
+      formData.append('house', new Blob([JSON.stringify(this.ruleForm)], {type: 'application/json'}));
       this.fileList.forEach((it) => {
         formData.append('file', it.file)
       });
       this.$refs["ruleForm"].validate(valid => {
         if (valid) {
-          this.axios.post('/house/addHouse',formData).then(res => {
+          this.axios.post('/house/addHouse', formData).then(res => {
             if (res.data.code === 200) {
               this.notifySucceed(res.data.msg);
-            }else {
+            } else {
               this.notifyError(res.data.msg);
             }
           }).catch(err => {
             return Promise.reject(err);
           });
-        }else {
+        } else {
           return false;
         }
       })

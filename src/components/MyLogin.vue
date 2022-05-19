@@ -9,10 +9,10 @@
   <div id="myLogin">
     <el-dialog title="登录" width="300px" center :visible.sync="isLogin">
       <el-form :model="LoginUser" :rules="rules" status-icon ref="ruleForm" class="demo-ruleForm">
-        <el-form-item prop="name">
+        <el-form-item prop="account">
           <el-input prefix-icon="el-icon-user-solid" placeholder="请输入账号" v-model="LoginUser.account"></el-input>
         </el-form-item>
-        <el-form-item prop="pass">
+        <el-form-item prop="password">
           <el-input
               prefix-icon="el-icon-view"
               type="password"
@@ -38,13 +38,12 @@ export default {
       if (!value) {
         return callback(new Error("请输入用户名"));
       }
-      // 用户名以字母开头,长度在5-16之间,允许字母数字下划线
-      const userNameRule = /^[a-zA-Z][a-zA-Z0-9_]{4,15}$/;
-      if (userNameRule.test(value)) {
-        this.$refs.ruleForm.validateField("checkPass");
+      // 用户名为手机号
+      const userAccountRule = /^(13[0-9]|14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9])\d{8}$/;
+      if (userAccountRule.test(value)) {
         return callback();
       } else {
-        return callback(new Error("字母开头,长度5-16之间,允许字母数字下划线"));
+        return callback(new Error("请输入正确的手机号！"));
       }
     };
     // 密码的校验方法
@@ -55,7 +54,6 @@ export default {
       // 密码以字母开头,长度在6-18之间,允许字母数字和下划线
       const passwordRule = /^[a-zA-Z]\w{5,17}$/;
       if (passwordRule.test(value)) {
-        this.$refs.ruleForm.validateField("checkPass");
         return callback();
       } else {
         return callback(
@@ -109,8 +107,6 @@ export default {
                   // 弹出通知框提示登录成功信息
                   this.notifySucceed(res.data.msg);
                 } else {
-                  // 清空输入框的校验状态
-                  this.$refs["ruleForm"].resetFields();
                   // 弹出通知框提示登录失败信息
                   this.notifyError(res.data.msg);
                 }

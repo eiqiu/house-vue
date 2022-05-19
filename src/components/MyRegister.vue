@@ -1,5 +1,5 @@
 <!--
- * @Description: 描述
+ * @Description: 注册组件
  * @Author: house-team
  * @Date: 2022/4/25
  * @LastEditors:
@@ -71,7 +71,6 @@ export default {
                   return callback(new Error(res.data.msg));
                 } else {
                   // 代表用户可以注册
-                  this.$refs.ruleForm.validateField("checkPass");
                   return callback();
                 }
               }
@@ -91,7 +90,6 @@ export default {
       // 密码以字母开头,长度在6-18之间,允许字母数字和下划线
       const passwordRule = /^[a-zA-Z]\w{5,17}$/;
       if (passwordRule.test(value)) {
-        this.$refs.ruleForm.validateField("checkPass");
         return callback();
       } else {
         return callback(
@@ -106,7 +104,6 @@ export default {
       }
       // 校验是否以密码一致
       if (this.RegisterUser.pass !== "" && value === this.RegisterUser.pass) {
-        this.$refs.ruleForm.validateField("checkPass");
         return callback();
       } else {
         return callback(new Error("两次输入的密码不一致"));
