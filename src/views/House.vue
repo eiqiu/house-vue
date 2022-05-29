@@ -176,7 +176,6 @@ export default {
     },
     // 通过搜索条件向后端请求商品数据
     getHouseBySearch() {
-      // console.log('调用了搜索方法'+this.search)
       this.axios
           .post("/house/searchHouse", {
             keywords: this.search,

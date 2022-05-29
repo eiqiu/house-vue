@@ -36,6 +36,11 @@
             <li>
               <router-link to="/sellHouse">发布房屋</router-link>
             </li>
+            <li>
+              <el-badge :value="this.totalMessage" class="item">
+                <el-button type="text"  @click="myMessage">我的消息</el-button>
+              </el-badge>
+            </li>
             <li class="myHouse">
               <router-link to="/myHouse">
                 <i class="el-icon-s-home"></i> 我的发布
@@ -71,8 +76,8 @@
     </el-header>
       <MyLogin></MyLogin>
       <MyInformation></MyInformation>
+      <MyMessage :message-list="this.messageList"></MyMessage>
       <MyRegister :register="register" @fromChild="isRegister"></MyRegister>
-
     <!-- 主体部分-->
     <el-main>
       <keep-alive>
@@ -110,9 +115,7 @@
 <script>
 import {mapActions} from "vuex";
 import {mapGetters} from "vuex";
-import MyInformation from "@/components/MyInformation";
 export default {
-  components: {MyInformation},
   beforeCreate() {
     this.activeIndex = this.$route.path;
   },
@@ -121,10 +124,14 @@ export default {
       activeIndex: "/", // 头部导航栏选中的标签
       search: "", // 搜索条件
       register: false, // 是否显示注册组件
-      visible: false // 是否退出登录
+      visible: false, // 是否退出登录
+      messageList: [],
+      totalMessage: 0
     }
   },
   created() {
+    this.activeIndex = this.$route.path;
+    // 获取分类列表
     this.axios.post("/house/getCategory").then(res => {
       if (res.data.code === 200){
         this.setCategoryList(res.data.data)
@@ -137,12 +144,30 @@ export default {
       // 如果已经登录，设置vuex登录状态
       this.setUser(JSON.parse(localStorage.getItem("user")));
     }
+    // 获取消息列表
+    this.axios.post("/user/getMessage",{
+      user_id: this.$store.getters.getUser.user_id,
+      pageNum: 1,
+      pageSize: 10}).then(res => {
+      if (res.data.code === 200) {
+        this.messageList = res.data.data.list
+        var total = 0;
+        for (var i = 0; i < this.messageList.length; i ++) {
+          if (this.messageList[i].message_state === 1) {
+            total = total + 1;
+          }
+        }
+        this.totalMessage = total
+      }
+    }).catch(err => {
+      return Promise.reject(err);
+    })
   },
   computed: {
     ...mapGetters(["getUser", "getCategoryList"])
   },
   methods: {
-    ...mapActions(["setUser", "setShowLogin", "setCategoryList", "setShowInformation"]),
+    ...mapActions(["setUser", "setShowLogin", "setCategoryList", "setShowInformation", "setShowMessage"]),
     // 登陆
     login() {
       this.setShowLogin(true);
@@ -150,6 +175,33 @@ export default {
     // 我的个人信息
     myInformation() {
       this.setShowInformation(true);
+    },
+    // 我的消息
+    myMessage() {
+      if (this.$store.getters.getUser.user_id !== null) {
+        this.setShowLogin(true);
+      }else {
+        this.setShowMessage(true);
+        this.axios.post("/user/changeMessage",{user_id:this.$store.getters.getUser.user_id})
+        // 获取消息列表
+        this.axios.post("/user/getMessage",{
+          user_id: this.$store.getters.getUser.user_id,
+          pageNum: 1,
+          pageSize: 10}).then(res => {
+          if (res.data.code === 200) {
+            this.messageList = res.data.data.list
+            var total = 0;
+            for (var i = 0; i < this.messageList.length; i ++) {
+              if (this.messageList[i].message_state === 1) {
+                total = total + 1;
+              }
+            }
+            this.totalMessage = total
+          }
+        }).catch(err => {
+          return Promise.reject(err);
+        })
+      }
     },
     // 退出登录
     logout() {
@@ -172,7 +224,7 @@ export default {
         this.$router.push({ path: "/house", query: { search: this.search } });
         this.search = "";
       }
-    }
+    },
   }
 }
 </script>
@@ -205,6 +257,7 @@ a:hover {
   height: 40px;
   background-color: #3d3d3d;
   margin-bottom: 20px;
+  padding-top: 7px;
 }
 .topbar .nav {
   width: 1225px;

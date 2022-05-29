@@ -57,17 +57,22 @@ export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Home',
   created() {
-    // 获取房数据
+    // 获取轮播图数据
     this.carousel = [
       {
         carousel_id: 1,
-        imgPath: require('../assets/imgs/xinjia.png'),
-        describes: '房子1'
+        imgPath: require('../assets/imgs/xinjia1.png'),
+        describes: '图片1'
       },
       {
         carousel_id: 2,
         imgPath: require('../assets/imgs/xinjia2.png'),
-        describes: '房子2'
+        describes: '图片2'
+      },
+      {
+        carousel_id: 3,
+        imgPath: require('../assets/imgs/xinjia3.png'),
+        describes: '图片3'
       }
     ];
     this.getHouse("hotHouse","hotHouseList");

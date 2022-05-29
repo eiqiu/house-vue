@@ -13,6 +13,24 @@ Vue.use(VueAxios,axios)
 Vue.use(VueCookies)
 axios.defaults.baseURL = "http://localhost:8089/"
 
+// 定义时间过滤器，
+Vue.filter('dateFormat', function (originDate, pattern = '') {
+  // 根据给定的时间字符串，得到特定的时间
+  var dt = new Date(originDate)
+  //   yyyy-mm-dd
+  var y = dt.getFullYear()
+  var m = (dt.getMonth() + 1).toString().padStart(2, '0')
+  var d = dt.getDate().toString().padStart(2, '0')
+  if (pattern.toLowerCase() === 'yyyy-mm-dd') {
+    return `${y}-${m}-${d}`
+  } else {
+    var hh = dt.getHours().toString().padStart(2, '0')
+    var mm = dt.getMinutes().toString().padStart(2, '0')
+    var ss = dt.getSeconds().toString().padStart(2, '0')
+    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+  }
+})
+
 // 封装提示成功的弹出框
 Vue.prototype.notifySucceed = function (msg) {
   this.$notify({
@@ -61,6 +79,10 @@ import MyList from "@/components/MyList";
 Vue.component(MyList.name, MyList)
 import MyMenu from "@/components/MyMenu";
 Vue.component(MyMenu.name, MyMenu)
+import MyMessage from "@/components/MyMessage";
+Vue.component(MyMessage.name, MyMessage)
+import MyInformation from "@/components/MyInformation";
+Vue.component(MyInformation.name, MyInformation)
 new Vue({
   router,
   store,

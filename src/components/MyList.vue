@@ -22,9 +22,12 @@
         <h3 v-if="myHouse">{{item.house_address}}</h3>
         <el-button-group v-if="myHouse">
           <router-link :to="{path: '/house/editMyHouse', query:{houseID:item.house_id}}">
-            <i class="el-icon-edit edit-icon" style="padding-left: 90px"></i>
+            <i class="el-icon-edit edit-icon" style="padding-left: 40px;font-size: x-small">编辑</i>
           </router-link>
-          <i class="el-icon-delete-solid delete-icon" @click="openDelete(item.house_id)" style="padding-left: 20px"></i>
+          <i class="el-icon-delete-solid delete-icon" @click="openDelete(item.house_id)" style="padding-left: 20px;font-size: x-small">删除</i>
+          <i v-if="item.house_state === 0" class="el-icon-view" style="color: red;padding-left: 20px;font-size: x-small">审核中</i>
+          <i v-if="item.house_state === 1" class="el-icon-check" style="color: green;padding-left: 20px;font-size: x-small">审核通过</i>
+          <i v-if="item.house_state === 2" class="el-icon-close" style="color: red;padding-left: 20px;font-size: x-small">审核未通过</i>
         </el-button-group>
         <!-- 我的收藏 -->
         <router-link :to="{ path: '/house/details', query: {houseID:item.house_id} }" v-else-if="isDelete">
